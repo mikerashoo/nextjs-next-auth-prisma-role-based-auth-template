@@ -1,4 +1,4 @@
-// pages/auth/login.tsx
+// pages/auth/signin.tsx
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";

@@ -1,10 +1,28 @@
 // pages/api/auth/[...nextauth].ts
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import CredentialsProvider from "next-auth/providers/credentials"; 
+import { getUserFromBackend, getUserRefreshToken } from "@/backend-services/auth";
+ 
 
-const prisma = new PrismaClient();
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
+async function refreshAccessToken(token) {
+  try {
+    
+    return await getUserRefreshToken(token);
+  } catch (error) {
+    console.log(error)
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    }
+  }
+}
+
 
 export default NextAuth({
   providers: [
@@ -15,32 +33,18 @@ export default NextAuth({
         password: { label: "Password", type: "password" }
       },
       authorize: async (credentials) => {
-        const userField = credentials.userName; // This could be email, username, or phone number
-        const passwordInput = credentials.password;
+        const userName = credentials.userName; // This could be email, username, or phone number
+        const password = credentials.password;
 
-        // Try to identify the user based on the input (email, username, or phone)
-        const user = await prisma.user.findFirst({
-          where: {
-            OR: [
-              { email: userField }, 
-              { phoneNumber: userField },
-            ],
-          }, 
-        });
+        const user = await getUserFromBackend(userName, password);
+        
 
         if (!user) {
           throw new Error('No user found with the given details');
         }
 
-        // Verify password
-        const isValid = await bcrypt.compare(passwordInput, user.password);
-        if (!isValid) {
-          throw new Error('Invalid password');
-        }
-
-        const { password, ...userWithoutPassword } = user; 
-        // Return user object for successful authentication
-        return userWithoutPassword;
+       
+        return user;
       },
     }),
   ],
@@ -55,16 +59,34 @@ export default NextAuth({
     strategy: "jwt",
   },
   callbacks: {
+    
     async jwt({ token, user }) {
       // If it's the first time the JWT is being created (user sign in)
       if (user) {
         token.user = user; 
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = user.accessTokenExpires
       }
-      return token;
+
+       // Return previous token if the access token has not expired yet
+       if (Date.now() < token.accessTokenExpires) {
+        return token
+      }
+
+      // Access token has expired, try to update it
+      return refreshAccessToken(token) 
     },
     async session({ session, token }) {
       // Assign the role from the JWT to the session
-      session.user = token.user;
+      if(token){
+        session.user = token.user;
+        session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
+        session.accessTokenExpires = token.accessTokenExpires;
+        session.error = token.error
+      }
+     
       return session;
     },
   }
