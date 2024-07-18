@@ -1,6 +1,7 @@
 import { ActiveStatus, UserRole } from "./prisma-enums";
-import {  IDBBranch, IDBProvider,  IDBUser } from "./prisma-models";
-import { IBranch } from "./providerAndBranch";
+import {  IDBShop, IDBProvider,  IDBUser } from "./prisma-models"; 
+import { IShop } from "./providerAndShop";
+ 
 
 export interface ICashier  {
     userName: string
@@ -23,20 +24,20 @@ export interface IUser extends Omit<IDBUser, 'password'> {
   provider?: IDBProvider; 
   agentProvider?: IDBProvider; 
   //: cashier; 
-  cashierBranch?: IDBBranch; 
+  cashierShop?: IDBShop; 
 }
 
 
 export interface IAccount {
   id       : string,
   userId : string,
-  branchId : string,
-  branch: IBranch
+  shopId : string,
+  shop: IShop;
   profile: IUser
 }
 
 export interface ICashierLoginData extends IUser { 
-  branch: IBranch;  
+  shop: IShop;  
 }
 
 export interface IProviderAdminLoginData extends IUser { 

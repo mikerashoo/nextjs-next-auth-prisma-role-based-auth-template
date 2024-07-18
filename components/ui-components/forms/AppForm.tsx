@@ -88,8 +88,8 @@ export default function AppForm({
   }
 
   const renderField = (input: ISchemaInputProps) => {
-    const { name, label, options: givenOptions, inputType } = input;
-    if(inputType == InputType.Hidden) return <input type="hidden" {...register(name)} />
+    const { name, label, options: givenOptions, inputType, value } = input;
+    if(inputType == InputType.Hidden) return <></> 
 
     if (inputType === InputType.Radio) {
       // const inputSchema = schema.shape[name]._def.schema ?? schema.shape[name]._def.innerType;
@@ -158,6 +158,7 @@ export default function AppForm({
         </FormControl>
       );
     }
+ 
 
     return (
       <AppInput

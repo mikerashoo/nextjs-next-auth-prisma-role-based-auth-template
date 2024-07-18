@@ -1,14 +1,12 @@
  
  
  import { GetServerSideProps, InferGetServerSidePropsType } from 'next'; 
- import { IServerSideAPiResponse, serverSideApiCall } from '@/lib/serverApiCall';
- import { IUser } from '@/utils/shared/shared-types/userModels';
- import ProviderSuperAgentsPageWrapper from '@/components/provider-components/super-agents/home/ProviderSuperAgentsPageWrapper';
+ import { IServerSideAPiResponse, serverSideApiCall } from '@/lib/serverApiCall'; 
 import { ISuperAgentInfo } from '@/utils/shared/shared-types/agentModels';
-import { PROVIDER_SUPER_AGENT_END_POINT_PREFIX } from '@/utils/types/constants/backend-constants';
-import SuperAgentDetailWrapper from '@/components/provider-components/super-agents/super-agents-detail/SuperAgentDetailWrapper';
+import { PROVIDER_SUPER_AGENT_END_POINT_PREFIX } from '@/utils/types/constants/backend-constants'; 
 import GeneralErrorComponent from '@/components/common/GeneralErrorComponent';
 import { GENERAL_ERROR_MESSAGE } from '@/utils/constants';
+import SuperAgentDetailWrapper from '@/components/provider-components/agent-super-agent/super-agents/detail/SuperAgentDetailWrapper';
  
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

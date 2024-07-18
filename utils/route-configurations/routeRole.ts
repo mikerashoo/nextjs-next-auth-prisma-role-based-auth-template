@@ -1,5 +1,6 @@
  
-import { UserRole } from "@/lib/enums";
+ 
+import { UserRole } from "../shared/shared-types/prisma-enums";
 import { adminRoleRoutes } from "./adminRoutes";
 
 export const RouteRoles: Array<IRouteRole>= [
@@ -12,8 +13,8 @@ export const RouteRoles: Array<IRouteRole>= [
         ]
     },
      {
-        role: UserRole.BRANCH_ADMIN,
-        route: '/branch',
+        role: UserRole.CASHIER,
+        route: '/shop',
         subRoutes: [
            
         ]

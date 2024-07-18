@@ -23,6 +23,7 @@ export interface IInputOption {
 export interface ISchemaInputProps {
   name: string;
   label: string;
+  value?: any;
   inputType: InputType;
   options?: IInputOption[] | [];
 }

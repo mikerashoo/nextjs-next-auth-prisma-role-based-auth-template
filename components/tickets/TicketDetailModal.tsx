@@ -1,7 +1,7 @@
 import { ITicketWithDetail } from "@/utils/shared/shared-types/ticketModels";
 import React, { useState } from "react";
 import AppModal from "../ui-components/modals/AppModal";
-import { useBranchDetailContext } from "@/contexts/branch-contexts/BranchDetailContext";
+import { useShopDetailContext } from "@/contexts/shop-contexts/ShopDetailContext";
 import { HeadlessButton } from "../ui-components/AppButton";
 import { InfoIcon } from "@chakra-ui/icons";
 import { Br, Cut, Line, Printer, Text, Row } from "react-thermal-printer";
@@ -11,7 +11,7 @@ interface ITicketDetailModalProps {
   ticket: ITicketWithDetail;
 }
 function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
-  const { setLoading, error, loading, reload } = useBranchDetailContext();
+  const { setLoading, error, loading, reload } = useShopDetailContext();
 
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
@@ -21,6 +21,7 @@ function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
         loading={loading}
         title={ticket.uniqueId + " detail"}
         isOpen={isOpen}
+        setIsOpen={setIsOpen}
         toggleButton={
           <HeadlessButton status={0} className="font-semibold">
             <InfoIcon /> Detail
@@ -36,7 +37,7 @@ function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
             ID: {ticket.uniqueId}
           </Text>
           <Text size={{ width: 2, height: 2 }}>
-            Branch: {ticket.game.branch.name}
+            Shop: {ticket.game.shop.name}
           </Text>
           <Text size={{ width: 2, height: 2 }}>
             Cashier: {ticket.cashier.userName}

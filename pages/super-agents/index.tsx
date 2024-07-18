@@ -1,9 +1,9 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'; 
 import { IServerSideAPiResponse, serverSideApiCall } from '@/lib/serverApiCall';
-import { IUser } from '@/utils/shared/shared-types/userModels';
-import ProviderSuperAgentsPageWrapper from '@/components/provider-components/super-agents/home/ProviderSuperAgentsPageWrapper';
+import { IUser } from '@/utils/shared/shared-types/userModels'; 
 import { PROVIDER_SUPER_AGENT_END_POINT_PREFIX } from '@/utils/types/constants/backend-constants';
 import GeneralErrorComponent from '@/components/common/GeneralErrorComponent';
+import ProviderSuperAgentsPageWrapper from '@/components/provider-components/agent-super-agent/super-agents/ProviderSuperAgentsPageWrapper';
 
  
  

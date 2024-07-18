@@ -52,7 +52,7 @@ export default function AppSelect({
   };
 
   const onSearch = (value) => {
-    if (value == "") {
+    if (value == "" || value.trim().length == 0) {
       setSelected(defaultLabel ? defaultSelect : options[0]);
     }
     setQuery(value);
@@ -80,7 +80,7 @@ export default function AppSelect({
 
   return (
     <div className={`w-full    ${fit ? 'md:w-fit' : 'w-full'}`}>
-      <Combobox
+      <Combobox 
         immediate
         value={selected}
         onChange={(value) => onChange(value)}

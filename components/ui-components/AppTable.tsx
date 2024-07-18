@@ -358,7 +358,7 @@ export interface IAppTablePaginationProps {
   end: number;
 }
 
-const TablePagination = ({
+export const TablePagination = ({
   loading,
   currentPage,
   pageCount,
@@ -487,7 +487,7 @@ export const TableHeadingSortButton = ({
     </button>
   );
 };
-const TableLoading = ({ columnCount }: TableLoadingProps) => {
+export const TableLoading = ({ columnCount }: TableLoadingProps) => {
   return Array.from({ length: 9 }, (_, currentIndex) => {
     return (
       <tr key={currentIndex} role="status">

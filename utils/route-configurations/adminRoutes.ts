@@ -1,6 +1,7 @@
  
-import { UserRole } from "@/lib/enums";
+ 
 import { FiChevronDown, FiTrendingUp } from "react-icons/fi";
+import { UserRole } from "../shared/shared-types/prisma-enums";
 
 export const adminProviderRoute = {
     route: '/admin/providers',
@@ -13,8 +14,8 @@ export const adminRoleRoutes = {
     subRoutes: [
         adminProviderRoute,
         {
-            route: '/admin/branches',
-            label: "Branches",
+            route: '/admin/shops',
+            label: "Shops",
             icon: FiChevronDown
 
         }

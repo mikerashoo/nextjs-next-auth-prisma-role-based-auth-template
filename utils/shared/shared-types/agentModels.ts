@@ -1,9 +1,10 @@
-import { UserRole } from "@/utils/prisma-enums";
+ 
+import { UserRole } from "./prisma-enums";
 import { IUser } from "./userModels";
 
 export interface ISuperAgentInfo extends IUser {
     agentCount: number,
-    branchCount: number,
+    shopCount: number,
   }
 
   export interface IUserBasicInformationForRelation {

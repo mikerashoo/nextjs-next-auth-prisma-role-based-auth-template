@@ -16,10 +16,12 @@ export function getValues<T extends Record<string, any>>(obj: T) {
 
   export const getFullNameForAgent = (user: any): string => {
      
+    if(!user) return '-';
     const name = `${user.firstName} ${user.lastName}`;
     return `${name} ${user.role && user.role == UserRole.SUPER_AGENT ? '🔥' : ''}`
   }
   export const getAgentSuperAgent = (agent: any): string => {
+    if(!agent) return '-';
 
     const isUserSuperAgent = agent.role && agent.role == UserRole.SUPER_AGENT;
     if(isUserSuperAgent) return getFullNameForAgent(agent)

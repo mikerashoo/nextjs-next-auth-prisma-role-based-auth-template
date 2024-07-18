@@ -23,7 +23,7 @@ interface ITicketSummaryFilter {
 }
 
 export default function CommonReportTable({tickets}: {tickets: ITicketWithDetail[]}) {
-  const { report, loading, error, reload, filterLabel } =
+  const { report, loading, error } =
     useCommonReportContext(); 
  
   const [ticketsToShow, setTicketsToShow] = useState<ITicketWithDetail[]>([]); 

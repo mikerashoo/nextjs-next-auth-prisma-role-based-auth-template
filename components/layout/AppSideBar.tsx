@@ -11,14 +11,15 @@ import React, { ReactNode, use, useEffect } from "react";
 import Logo, { LogoIcon } from "../common/Logo";
 import { Heading, IconButton } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
-import { useAuth } from "@/contexts/AuthContext";
-import { IoLogoCodepen, IoMdGitBranch } from "react-icons/io";
+import { useAuth } from "@/contexts/AuthContext"; 
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserRole } from "@/utils/shared/shared-types/prisma-enums";
 import { UserGroupIcon } from "@heroicons/react/20/solid";
 import { MdOutlineDashboard } from "react-icons/md";
+import AppIcon from "../ui-components/AppIcon/CommonIcon";
+import { IconName } from "../ui-components/AppIcon/icon-list";
 
 export interface INavItem {
   label: string;
@@ -41,17 +42,21 @@ export const getNavItemsPerRole = (role: string): INavItem[] => {
           icon: <MdOutlineDashboard size={24} />,
           href: "",
         },
-       
         {
-          label: "Shops/Agents",
+          label: "Shops",
+          icon: <AppIcon name={IconName.ShoppingCart} />,
+          href: "shops",
+        },
+        {
+          label: "Cashiers",
+          icon: <AppIcon name={IconName.UserX} />,
+          href: "cashiers",
+        },
+        {
+          label: "Agents",
           icon: <UserGroupIcon width={24} />,
           href: "",
           subNavs: [
-            {
-              label: "Branch Management",
-              icon: <IoMdGitBranch size={24} />,
-              href: "branches",
-            },
             {
               label: "Super Agents",
               href: "super-agents",

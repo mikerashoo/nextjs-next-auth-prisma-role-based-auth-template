@@ -19,15 +19,52 @@ export const ethiopianPhoneNumberSchema = z.string().regex(
 export const identifierSchema = z.string().regex(/^[a-z0-9-]+$/, {
   message: 'Invalid identifier. Value must be all lowercase with no spaces, and can include "-" character.',
 });
+ 
+const baseNameSchema = z.string()
+  .min(2, "Name must be at least 2 characters long")
+  .max(50, "Name must not exceed 50 characters");
 
+// First name schema
+const firstNameSchema = baseNameSchema.regex(/^[A-Za-z]+$/, "First name must contain only letters and no spaces");
+
+// Last name schema (allows hyphens for compound last names)
+const lastNameSchema = baseNameSchema.regex(/^[A-Za-z]+(-[A-Za-z]+)*$/, "Last name must contain only letters, and optionally one hyphen");
+
+// Username schema (allows letters, numbers, underscores, and hyphens)
+const userNameSchema = z.string()
+  .min(3, "Username must be at least 3 characters long")
+  .max(30, "Username must not exceed 30 characters")
+  .regex(/^\S+$/, "Username should have no spaces");
+ 
 
 export const commonUserRegisterSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: firstNameSchema,
+  lastName: lastNameSchema,
   phoneNumber: ethiopianPhoneNumberSchema, 
-  userName: z.string(), 
+  userName: userNameSchema, 
   password: z.string().min(8),
+  email: z.string().email().optional().nullable(),
+}); 
+
+
+export const agentRegistrationSchema = commonUserRegisterSchema.extend({
+  isSuperAgent: z.boolean().optional().nullable(), 
+})
+
+
+export type IAgentRegistrationSchema = z.infer<typeof agentRegistrationSchema>; 
+ 
+
+
+
+export const userUpdateSchema = z.object({ 
+  firstName: firstNameSchema,
+  lastName: lastNameSchema,
+  phoneNumber: ethiopianPhoneNumberSchema, 
+  userName: userNameSchema, 
 });
+
+export type IUserUpdateSchema = z.infer<typeof userUpdateSchema>; 
 
 
 export const userRegistrationSchema = commonUserRegisterSchema.extend({ 
@@ -42,10 +79,10 @@ export const changePasswordSchema = z.object({
 export type IChangePasswordSchema = z.infer<typeof changePasswordSchema>; 
 
 export const cashierUpdateSchema = z.object({ 
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: firstNameSchema,
+  lastName: lastNameSchema,
   phoneNumber: ethiopianPhoneNumberSchema, 
-  userName: z.string(),  
+  userName: userNameSchema, 
 });
 
 export type ICashierUpdateSchema = z.infer<typeof cashierUpdateSchema>; 
@@ -53,7 +90,7 @@ export type ICashierUpdateSchema = z.infer<typeof cashierUpdateSchema>;
 
 
 export const cashierREgisterSchema = commonUserRegisterSchema.extend({ 
-  // branchId: z.string(), 
+  // shopId: z.string(), 
 });
 export type ICashierRegisterSchema = z.infer<typeof cashierREgisterSchema>; 
 
@@ -63,7 +100,7 @@ export type ICashierRegisterSchema = z.infer<typeof cashierREgisterSchema>;
  
 export const userLoginSchema = z.object({
   userName: z.string().min(1, {
-    message: "Username or phone number required"
+    message: "Username is required"
   }),
   password: z.string().min(8, {
     message: "Password length must be greater or equal to 8"

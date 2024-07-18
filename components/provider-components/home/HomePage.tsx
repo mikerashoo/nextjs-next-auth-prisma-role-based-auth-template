@@ -21,8 +21,8 @@ const commonReport = {
 };
 
 const generalStats = {
-  activeBranchesCount: 10,
-  inactiveBranchesCount: 2,
+  activeShopsCount: 10,
+  inactiveShopsCount: 2,
 };
 
 const Card = ({ title, value, icon }) => (
@@ -48,7 +48,7 @@ const topCashiers = [
     { fullName: "Charlie Davis",  totalCollected: 35000 },
   ];
   
-  const topBranches = [
+  const topShops = [
     { name: "Main Street",  totalCollected: 150000 },
     { name: "Downtown", totalCollected: 140000 },
     { name: "Westside",  totalCollected: 130000 },
@@ -140,16 +140,16 @@ export default function HomePage() {
         </div>
 
         <section className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <SectionTitle>Branch Statistics</SectionTitle>
+          <SectionTitle>Shop Statistics</SectionTitle>
           <div className="flex w-full gap-2 flex-wrap justify-around">
             <Card 
-              title="Active Branches" 
-              value={generalStats.activeBranchesCount}
+              title="Active Shops" 
+              value={generalStats.activeShopsCount}
               icon={<Building className="text-green-500" size={24} />}
             />
             <Card 
-              title="Inactive Branches" 
-              value={generalStats.inactiveBranchesCount}
+              title="Inactive Shops" 
+              value={generalStats.inactiveShopsCount}
               icon={<Building className="text-red-500" size={24} />}
             />
           </div>
@@ -162,9 +162,9 @@ export default function HomePage() {
             columns={["Full Name",  "Total Collected"]}
           />
           <Table 
-            title="Top 5 Performing Branches"
-            data={topBranches}
-            columns={["Branch Name", "Total Collected"]}
+            title="Top 5 Performing Shops"
+            data={topShops}
+            columns={["Shop Name", "Total Collected"]}
           />
         </div>
       </main>

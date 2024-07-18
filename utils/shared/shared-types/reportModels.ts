@@ -27,21 +27,21 @@ export interface ICommonReport {
 
 
 export interface IGeneralStatics {
-  activeBranchesCount: number,
-  inactiveBranchesCount: number, 
+  activeShopsCount: number,
+  inactiveShopsCount: number, 
 
 }
 
 
 export interface IBasicCashierInfo {
   fullName: string,
-  branchName: string,
+  shopName: string,
   totalCollected: number, 
 
 }
 
 
-export interface IBasicBranchInfo {
+export interface IBasicShopInfo {
   name: string,
   agentName: string,
   totalCollected: number, 

@@ -8,8 +8,7 @@ import React, {
   } from "react"; 
   import { GENERAL_ERROR_MESSAGE } from "@/utils/constants";  
 import { IUser } from "@/utils/shared/shared-types/userModels";
-import { providerSuperAgentListApiCalls } from "@/backend-services/provider-api-calls/super-agent-management/super-agent-list-api-calls";
-import { ISuperAgentRegisterSchema } from "@/lib/schemas/userSchemas";
+import { providerSuperAgentListApiCalls } from "@/backend-services/provider-api-calls/agent-super-agents/super-agent/super-agent-list-api-calls"; 
 
   
   export interface IProviderSuperAgentListContext {

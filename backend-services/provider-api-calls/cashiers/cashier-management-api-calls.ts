@@ -13,7 +13,7 @@ const deleteCashier = async ( cashierId: string): Promise<ICallAPiResponse<boole
        return await callApiFromParams(getCashierApiCalls(cashierId).delete);
  
     } catch (error) {
-        console.error("Backend get fetchBranchess error", error);
+        console.error("Backend get fetchShopss error", error);
         throw error;
     }
 };
@@ -24,7 +24,7 @@ const changeStatus = async ( cashierId: string): Promise<ICallAPiResponse<IUser>
  
  
     } catch (error) {
-        console.error("Backend get fetchBranchess error", error);
+        console.error("Backend get fetchShopss error", error);
         throw error;
     }
 };
@@ -37,7 +37,7 @@ const changePassword = async ( cashierId: string, data: IChangePasswordSchema): 
  
  
     } catch (error) {
-        console.error("Backend get fetchBranchess error", error);
+        console.error("Backend get fetchShopss error", error);
         throw error;
     }
 };
@@ -51,7 +51,7 @@ const update = async (cashierId: string, data: ICashierUpdateSchema): Promise<IC
  
  
     } catch (error) {
-        console.error("Backend get fetchBranchess error", error);
+        console.error("Backend get fetchShopss error", error);
         throw error;
     }
 };

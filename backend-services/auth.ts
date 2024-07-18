@@ -83,7 +83,7 @@ export const validateRefreshToken = async (refreshToken: string): Promise<ICallA
        return await callApi(BACKEND_AUTH_URL + 'validate-token', 'POST', { refreshToken});
  
     } catch (error) {
-        console.error("Backend get fetchBranchess error", error);
+        console.error("Backend get fetchShopss error", error);
         throw error;
     }
 };

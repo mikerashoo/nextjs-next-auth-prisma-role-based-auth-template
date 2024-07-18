@@ -15,8 +15,7 @@ import {
   IFilterDateRanges,
   PeriodTodayDateRanges,
   filterPeriods,
-} from "@/utils/report-hepers"; 
-import { branchInformationApiService } from "@/backend-services/provider-api-calls/branches/information";
+} from "@/utils/report-hepers";  
 import { GENERAL_ERROR_MESSAGE } from "@/utils/constants";
 import { ICallAPiResponse } from "@/lib/callAPi";
 import { ICommonReport } from "@/utils/shared/shared-types/reportModels";

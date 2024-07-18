@@ -2,7 +2,7 @@
 import { UserRole } from "@/utils/shared/shared-types/prisma-enums";
 import { IProviderAdminLoginData } from "@/utils/shared/shared-types/userModels";
 import { MdOutlineDashboard,  } from "react-icons/md";
-import { IoMdGitBranch } from "react-icons/io";
+ 
 import {
     createContext,
     useContext,
@@ -13,8 +13,10 @@ import { GiPostOffice } from "react-icons/gi";
 import { usePathname, useRouter } from "next/navigation";
 import { UserGroupIcon } from "@heroicons/react/20/solid";
 import { useAuth } from "./AuthContext";
+import AppIcon from "@/components/ui-components/AppIcon/CommonIcon";
+import { IconName } from "@/components/ui-components/AppIcon/icon-list";
 
-export const BranchesIcon = ({size} : {
+export const ShopsIcon = ({size} : {
   size?: number;
 }) => {
   return <GiPostOffice size={size ?? 24} />
@@ -57,9 +59,9 @@ const {user} = useAuth()
                     href: "",
                 },
                 {
-                    label: "Branch Management",
-                    icon: <IoMdGitBranch size={24} />,
-                    href: "branches",
+                    label: "Shop Management",
+                    icon: <AppIcon name={IconName.GitShop} size={24} />,
+                    href: "shops",
                 },
                 {
                   label: "Users",
