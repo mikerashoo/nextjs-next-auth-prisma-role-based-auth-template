@@ -13,14 +13,14 @@ import {
   getFilterStartEndFromPeriod,
   now,
 } from "@/utils/common-hepers/date-time-helpers";
-import { branchInformationApiService } from "@/backend-services/branches/information";
-import { GameType, TicketStatus } from "@/utils/prisma-enums";
+import { branchInformationApiService } from "@/backend-services/provider-api-calls/branches/information";
+import { GameType, TicketStatus } from "@/utils/shared/shared-types/prisma-enums";
 import {
   IFilterDateRanges,
   PeriodTodayDateRanges,
   filterPeriods,
-} from "@/utils/report-hepers";
-import { ITicketReportFilterSchema } from "@/utils/shared/schemas/provider/reportSchema";
+} from "@/utils/report-hepers"; 
+import { ITicketReportFilterSchema } from "@/utils/shared/schemas/reportSchema";
 
 interface IReportFilterForBranchTicket {
   dateRanges?: IFilterDateRanges;

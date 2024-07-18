@@ -1,15 +1,16 @@
  
 import { ICallAPiResponse, callApi, callNoAuthApi } from "@/lib/callAPi";
-import { BACKEND_AUTH_URL } from "@/utils/types/constants/backend-constants";  
+import { IProviderSiteLoginData } from "@/utils/shared/shared-types/userModels";
+import { BACKEND_AUTH_URL, BACKEND_LOGIN_URL } from "@/utils/types/constants/backend-constants";  
 import { JWT } from "next-auth/jwt";
 
-export const getUserFromBackend = async (userName: string, password: string) => {
+export const getUserFromBackend = async (userName: string, password: string): Promise<IProviderSiteLoginData> => {
     try {
         const loginData = {
             userName,
             password
         }; 
-        const res = await fetch(BACKEND_AUTH_URL + 'provider-admin-login', {
+        const res = await fetch(BACKEND_LOGIN_URL, {
             method: 'POST',
             body: JSON.stringify(loginData),
             headers: { "Content-Type": "application/json" }
@@ -18,6 +19,8 @@ export const getUserFromBackend = async (userName: string, password: string) => 
         console.log("Response of getUserFromDb", res);
         
         const user = await res.json();
+
+        console.log("user for login", user)
 
         // If no error and we have user data, return it
         if (res.ok && user) {

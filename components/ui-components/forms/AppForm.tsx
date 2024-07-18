@@ -92,25 +92,25 @@ export default function AppForm({
     if(inputType == InputType.Hidden) return <input type="hidden" {...register(name)} />
 
     if (inputType === InputType.Radio) {
-      const inputSchema = schema.shape[name]._def.schema;
-      console.log("Input Type", inputSchema)
-      let options = [];
+      // const inputSchema = schema.shape[name]._def.schema ?? schema.shape[name]._def.innerType;
+      // console.log("Input Type", inputSchema)
+      // let options = [];
 
-      if (inputSchema.isOptional()) {
-        // // if optional
-        let fieldType = inputSchema;
-        while (
-          fieldType._def &&
-          (fieldType._def.typeName === "ZodOptional" ||
-            fieldType._def.typeName === "ZodNullable")
-        ) {
-          fieldType = fieldType._def.innerType;
-        }
+      // if (inputSchema.isOptional()) {
+      //   // // if optional
+      //   let fieldType = inputSchema;
+      //   while (
+      //     fieldType._def &&
+      //     (fieldType._def.typeName === "ZodOptional" ||
+      //       fieldType._def.typeName === "ZodNullable")
+      //   ) {
+      //     fieldType = fieldType._def.innerType;
+      //   }
 
-        options = Object.values(fieldType._def.values) as string[];
-      } else {
-        options = inputSchema._def.values;
-      }
+      //   options = Object.values(fieldType._def.values) as string[];
+      // } else {
+      //   options = inputSchema._def.values;
+      // }
 
       return (
         <FormControl key={name} isInvalid={!!errors[name]}>
@@ -121,13 +121,13 @@ export default function AppForm({
             render={({ field }) => (
               <RadioGroup {...field}>
                 <Stack direction="row">
-                  {options.map((option) => {
-                    const customOption =  givenOptions.find((gOption : IInputOption) => gOption.value == option);
+                  {givenOptions.map((customOption: IInputOption) => {
+                    // const customOption =  givenOptions.find((gOption : IInputOption) => gOption.value == option);
                     
                     return (
                     
-                    <Radio  key={option} value={option} {...(customOption?.customProps || {})}>
-                      {customOption ? customOption.label : option}
+                    <Radio  key={customOption.value} value={customOption.value} {...(customOption?.customProps || {})}>
+                      {customOption.label}
                     </Radio>
                   )}
                   

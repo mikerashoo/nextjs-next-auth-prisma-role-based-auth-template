@@ -1,6 +1,7 @@
-import { branchInformationApiService } from "@/backend-services/branches/information";
+import { branchInformationApiService } from "@/backend-services/provider-api-calls/branches/information";
 import { GENERAL_ERROR_MESSAGE } from "@/utils/constants";
-import { IDBBranch } from "@/utils/shared/shared-types/prisma-models";
+import { IProviderCommonQuerySchema } from "@/utils/shared/schemas/reportSchema"; 
+import { IBranchWithDetail } from "@/utils/shared/shared-types/providerAndBranch";
 import React, {
   createContext,
   useContext,
@@ -15,9 +16,11 @@ export interface IBranchListContext {
   setLoading: (boolean) => void;
   error: string | null;  
   reload: () => void;  
-  branches: IDBBranch[]
-
+  branches: IBranchWithDetail[] 
+  filterQuery?: IProviderCommonQuerySchema
 }
+
+
 
 const BranchListContext = createContext<IBranchListContext | undefined>(
   undefined
@@ -25,12 +28,14 @@ const BranchListContext = createContext<IBranchListContext | undefined>(
 
 export const BranchListProvider = ({
   children,
+  filterQuery
 }: {
   children: ReactNode; 
+  filterQuery?: IProviderCommonQuerySchema
 }) => { 
   const [loading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [branches, setBranches] = useState<IDBBranch[]>([]);
+  const [branches, setBranches] = useState<IBranchWithDetail[]>([]);
 
  
   const fetchBranches = useCallback(async () => {
@@ -38,7 +43,7 @@ export const BranchListProvider = ({
       setIsLoading(true);
       setError(null);
 
-      const branchListData = await branchInformationApiService.list();
+      const branchListData = await branchInformationApiService.list(filterQuery);
       if (branchListData.errorMessage) {
         setError(branchListData.errorMessage);
         setIsLoading(false);
@@ -55,7 +60,7 @@ export const BranchListProvider = ({
 
       setError(GENERAL_ERROR_MESSAGE + " white fetching branches");
     }
-  }, []);
+  }, [filterQuery]);
 
   useEffect(() => {
     fetchBranches();
@@ -71,6 +76,7 @@ export const BranchListProvider = ({
     error, 
     reload,  
     branches,
+    filterQuery,
     setLoading: setIsLoading
   };
 

@@ -11,7 +11,7 @@ export interface ICallAPiResponse<T> {
 
 
 export interface IApiCallParams {
-  endpoint: string,
+  endpoint: string, 
   method: string,
   body?: any 
 }

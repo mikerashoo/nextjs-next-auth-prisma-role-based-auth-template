@@ -1,7 +1,7 @@
+ 
+import { IDBBranch } from "./prisma-models"; 
+import { IAgentWithSuperAgent } from "./agentModels";   
 import { ActiveStatus } from "./prisma-enums";
-import { IDBBranch, IDBCashier } from "./prisma-models";
-import { CashierWithoutPassword, ICashier } from "./userModels";
-import { ICashierReport } from "./gameModels";
 
  
 
@@ -33,9 +33,7 @@ export interface IProvider {
    
   }
 
-
-  export interface IBranchWithDetail extends IDBBranch {
-    cashiers: IDBCashier[],
-    report: ICashierReport
+  export interface IBranchWithDetail extends IDBBranch { 
+    agent: IAgentWithSuperAgent
    
   }

@@ -1,3 +1,5 @@
+import { UserRole } from "../shared/shared-types/prisma-enums";
+
 export function capitalizeFirst(s)
 {
     return s[0].toUpperCase() + s.slice(1);
@@ -10,4 +12,18 @@ export function getValues<T extends Record<string, any>>(obj: T) {
 
   export const getFullName = (user: any) => {
     return `${user.firstName} ${user.lastName}`;
+  }
+
+  export const getFullNameForAgent = (user: any): string => {
+     
+    const name = `${user.firstName} ${user.lastName}`;
+    return `${name} ${user.role && user.role == UserRole.SUPER_AGENT ? '🔥' : ''}`
+  }
+  export const getAgentSuperAgent = (agent: any): string => {
+
+    const isUserSuperAgent = agent.role && agent.role == UserRole.SUPER_AGENT;
+    if(isUserSuperAgent) return getFullNameForAgent(agent)
+    return `${getFullNameForAgent(agent)} / ${agent.superAgent ? getFullNameForAgent(agent.superAgent) : isUserSuperAgent ? getFullNameForAgent(agent) : '-'}`
+
+ 
   }

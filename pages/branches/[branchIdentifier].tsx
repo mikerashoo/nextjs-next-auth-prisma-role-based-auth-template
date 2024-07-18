@@ -1,4 +1,4 @@
-import BranchDetailHome from '@/components/branches/detail'
+import BranchDetailHome from '@/components/provider-components/branches/detail'
 import { BranchDetailProvider } from '@/contexts/branch-contexts/BranchDetailContext'
 import { useRouter } from 'next/router'
 import React from 'react'

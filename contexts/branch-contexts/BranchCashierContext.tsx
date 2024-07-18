@@ -6,9 +6,9 @@ import React, {
     ReactNode,
     useCallback,
   } from "react"; 
-  import { GENERAL_ERROR_MESSAGE } from "@/utils/constants";
-import { IDBCashier } from "@/utils/shared/shared-types/prisma-models";  
-import { branchInformationApiService } from "@/backend-services/branches/information";
+  import { GENERAL_ERROR_MESSAGE } from "@/utils/constants"; 
+import { branchInformationApiService } from "@/backend-services/provider-api-calls/branches/information";
+import { IUser } from "@/utils/shared/shared-types/userModels";
 
   
   export interface IBranchCashiersContext {
@@ -17,8 +17,8 @@ import { branchInformationApiService } from "@/backend-services/branches/informa
     branchId: string;
     error: string | null;
     reload: () => void;
-    cashiers: IDBCashier[];
-    onUpdate: (cashier: IDBCashier) => void;
+    cashiers: IUser[];
+    onUpdate: (cashier: IUser) => void;
     onDelete: (cashierId: string) => void;
   }
   
@@ -35,7 +35,7 @@ import { branchInformationApiService } from "@/backend-services/branches/informa
   }) => {
     const [loading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [cashiers, setCashiers] = useState<IDBCashier[]>();
+    const [cashiers, setCashiers] = useState<IUser[]>();
   
     const fetchBranchCashiers = useCallback(async () => {
       try {
@@ -72,7 +72,7 @@ import { branchInformationApiService } from "@/backend-services/branches/informa
     };
     
 
-    const onUpdate = (cashier: IDBCashier) => {
+    const onUpdate = (cashier: IUser) => {
       const newData = cashiers.map(pCashier => pCashier.id == cashier.id ? cashier : pCashier);
       setCashiers(newData);
     };

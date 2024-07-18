@@ -13,19 +13,16 @@ interface ITicketDetailModalProps {
 function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
   const { setLoading, error, loading, reload } = useBranchDetailContext();
 
-  const [hideModal, setHideModal] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   return (
     <div>
       <AppModal
         loading={loading}
         title={ticket.uniqueId + " detail"}
-        hideModal={hideModal}
+        isOpen={isOpen}
         toggleButton={
-          <HeadlessButton
-            status={0}
-            className="font-semibold"
-          >
+          <HeadlessButton status={0} className="font-semibold">
             <InfoIcon /> Detail
           </HeadlessButton>
         }
@@ -58,7 +55,7 @@ function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
 
           <Br />
           <Line />
-          
+
           <Row
             left="Total Bet: "
             className="flex gap-4"
@@ -83,17 +80,14 @@ function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
             className="flex gap-4"
             right={<TicketStatusTag status={ticket.status} />}
           />
-  <Br />
+          <Br />
 
-          <Line /> 
+          <Line />
 
           <Text className="font-extrabold">Selections</Text>
- 
 
           {ticket.kenoTicket.selections.map((sl, index) => (
             <span className="py-2" key={sl.id}>
-            
-
               <Row
                 left={"Selection #" + (index + 1)}
                 className="flex gap-4"
@@ -124,14 +118,11 @@ function TicketDetailModal({ ticket }: ITicketDetailModalProps) {
               />
               <Line />
               <Br />
-
             </span>
           ))}
 
-         
-
           {ticket.status == "PAID" && ticket.payment && (
-            <> 
+            <>
               <Text
                 className="font-extrabold"
                 bold={true}

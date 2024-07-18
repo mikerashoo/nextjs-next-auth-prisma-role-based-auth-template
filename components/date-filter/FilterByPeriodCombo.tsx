@@ -1,206 +1,162 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  IDatePeriod,
+  CustomPeriod,
   IFilterDateRanges,
   filterPeriods,
 } from "@/utils/report-hepers";
-import { FormControl, Input, Select } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  useColorModeValue,
+  useDisclosure,
+  Popover,
+  ButtonGroup,
+  PopoverBody,
+  PopoverContent,
+  PopoverFooter,
+  PopoverTrigger,
+  FormControl,
+  FormLabel,
+  Portal,
+  PopoverArrow,
+} from "@chakra-ui/react";
+
+// import { Popover, PopoverBackdrop, PopoverButton, PopoverPanel } from '@headlessui/react'
 import {
   formatDateForFilter,
   getFilterStartEndFromPeriod,
+  now,
 } from "@/utils/common-hepers/date-time-helpers";
-import { CloseIcon, MinusIcon } from "@chakra-ui/icons";
-import { isAfter } from "date-fns";
 import ChakraRadio from "../ui-components/ChakraRadio";
-import AppDateRangePicker from "./AppDateRangePicker";
-import Datepicker from "react-tailwindcss-datepicker";
-
+import { SingleDatepicker } from "chakra-dayzed-datepicker";
+import { format } from "date-fns";
 interface IFilterByPeriodComboProps {
   onValuesChange: (dateRanges: IFilterDateRanges) => void;
+  onPeriodLabelChange: (periodLabel: string) => void;
+  loading?: boolean;
 }
 
 export default function FilterByPeriodCombo({
+  loading,
   onValuesChange,
+  onPeriodLabelChange
 }: IFilterByPeriodComboProps) {
-  const [selectedPeriod, setSelectedPeriod] = useState<string>(
-    filterPeriods[0].value
-  );
-
-  const [DateRangesDate, setDateRangesDate] = useState<IFilterDateRanges>(
-    getFilterStartEndFromPeriod(filterPeriods[0])
-  );
+  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
+ 
+  const [selectedPeriod, setSelectedPeriod] = useState(filterPeriods[0]);
+  const [customStartDate, setCustomStartDate] = useState(new Date());
+  const [customEndDate, setCustomEndDate] = useState(new Date());
 
   const onChange = (value: string) => {
-    setSelectedPeriod(value);
     console.log("Custom called", value);
 
     if (value != "custom") {
       const _period = filterPeriods.find((fP) => fP.value == value);
 
       onValuesChange(getFilterStartEndFromPeriod(_period));
+      setSelectedPeriod(_period); 
+      onPeriodLabelChange(_period.label)
     }
   };
 
   const onCustomChange = (values: IFilterDateRanges) => {
-    console.log("Values", values);
-    setDateRangesDate(values);
     onValuesChange(values);
   };
 
-  return (
-    <ChakraRadio
-      onSelect={onChange}
-      options={filterPeriods.map((fP) => {
-        return {
-          // label: selectedPeriod == 'custom' && fP.value != 'custom' ? fP.label.charAt(0) : fP.label,
-          label: fP.label,
-          value: fP.value,
-          additionalComponent:
-            fP.value == "custom" &&(
-              <CustomDatePicker
-                defaultDates={DateRangesDate}
-                onChange={onCustomChange}
+  const onApply = () => {
+    const values: IFilterDateRanges = {
+      start: customStartDate,
+      end: customEndDate,
+    };
+    onCustomChange(values);
+    setSelectedPeriod(CustomPeriod);
+
+    onPeriodLabelChange(`${customStartDate.toLocaleDateString()} - ${customEndDate.toLocaleDateString()}`)
+
+    onClose();
+  };
+ 
+  
+
+  const customStartShortHand = format(customStartDate, "dd/MM");
+  const customEndShortHand = format(customEndDate, "dd/MM");
+
+  const customDatePicker = (
+    <Popover
+      returnFocusOnClose={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      isLazy
+      placement="bottom-start"
+    >
+      <PopoverTrigger>
+        <span   onClick={onToggle} >
+          {selectedPeriod == CustomPeriod
+            ? `${customStartShortHand}-${customEndShortHand}`
+            : "Start - End"}
+        </span>
+      </PopoverTrigger>
+      <Portal>
+        <PopoverContent>
+          <PopoverArrow bg="#13db63" borderColor="blue.800" />
+          <PopoverBody>
+            <FormControl>
+              <FormLabel>Select Start Date</FormLabel>
+              <SingleDatepicker
+                propsConfigs={{
+                  triggerBtnProps: {
+                    width: "100%",
+                  },
+                }}
+                name="start-date"
+                date={customStartDate}
+                maxDate={now}
+                onDateChange={setCustomStartDate}
               />
-            ) 
-        };
-      })}
-    />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Select End Date</FormLabel>
+              <SingleDatepicker
+                propsConfigs={{
+                  triggerBtnProps: {
+                    width: "100%",
+                  },
+                }}
+                name="end-date"
+                date={customEndDate}
+                maxDate={now}
+                onDateChange={setCustomEndDate}
+              />
+            </FormControl>
+          </PopoverBody>
+          <PopoverFooter display="flex" justifyContent="flex-end">
+            <ButtonGroup size="sm">
+              <Button variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button onClick={onApply} colorScheme="red">
+                Apply
+              </Button>
+            </ButtonGroup>
+          </PopoverFooter>
+        </PopoverContent>
+      </Portal>
+    </Popover>
   );
-
-  return (
-    <div className="flex flex-col gap-2 w-full">
-      <Select
-        bg={"white"}
-        onChange={(e) => onChange(e.target.value)}
-        value={selectedPeriod}
-      >
-        {filterPeriods.map((filterOption) => {
-          return (
-            <option value={filterOption.value} key={filterOption.value}>
-              {filterOption.label}
-            </option>
-          );
-        })}
-      </Select>
-      {selectedPeriod == "custom" && (
-        <CustomDatePicker
-          defaultDates={DateRangesDate}
-          onChange={onCustomChange}
-        />
-      )}
-    </div>
-
-    //     <AppSelect
-    //     options={filterPeriods.map((filterOption) => {
-    //       return {
-    //         label: filterOption.label,
-    //         value: filterOption.value,
-    //       };
-    //     })}
-    //     onSelect={(selected) => {
-    //       onPeriodFilterChange(selected.value);
-    //     }}
-    //     key="date filter"
-    //     defaultLabel="Today"
-    //   />
-  );
-}
-
-interface ICustomDatePickerProps {
-  defaultDates: IFilterDateRanges;
-  onChange: (dateRanges: IFilterDateRanges) => void;
-}
-
-interface ICustomDateRangeValues {
-  startDate: Date;
-  endDate: Date;
-}
-export function CustomDatePicker({
-  defaultDates,
-  onChange,
-}: ICustomDatePickerProps) {
-  // const customStartDate = defaultDates.start;
-  // const customEndDate = defaultDates.length > 1 ? defaultDates[1] : null;
-
-  const now = new Date();
-  const onCustomRangeChange = (selectedDate, index: number) => {
-    const dateToUpdate = new Date(selectedDate);
-
-    const start = index == 0 ? dateToUpdate : defaultDates.start;
-    const end = index == 1 ? dateToUpdate : defaultDates.end;
-
-    let isStartGreater = isAfter(start, end);
-
-    onChange({
-      start: isStartGreater ? end : start,
-      end: isStartGreater ? start : end,
-    });
-  };
-
-  const [value, setValue] = useState<ICustomDateRangeValues>({
-    startDate: defaultDates.start,
-    endDate: defaultDates.end,
-  });
-
-  const handleValueChange = (newValue: ICustomDateRangeValues) => {
-    console.log("newValue:", newValue);
-    setValue(newValue);
-    onChange({
-      start: new Date(newValue.startDate),
-      end: new Date(newValue.endDate),
-    });
-  };
-
-  return (
-    <Datepicker
-      startFrom={defaultDates.start}
-      showFooter
-      useRange={false}
-      inputClassName="w-full rounded-md mx-4 font-normal bg-white p-2 dark:placeholder:text-green-400"
-      toggleIcon={(sele) => {
-        return <></>;
-      }}
-      maxDate={now}
-      value={value}
-      onChange={handleValueChange}
-      configs={{
-        footer: {
-          cancel: "Cancel",
-          apply: "Apply",
-        },
-      }}
-    />
-  );
-  return (
-    <div className="flex flex-row  rounded-lg  w-full items-center justify-center  gap-2">
-      <FormControl>
-        <Input
-          placeholder="Select Date and Time"
-          size="md"
-          datatype=""
-          value={formatDateForFilter(defaultDates.start)}
-          // defaultValue={formatDateForFilter(new Date(startAt))}
-          onChange={(e) => onCustomRangeChange(e.target.value, 0)}
-          type="date"
-          bg={"white"}
-          max={formatDateForFilter(now)}
-          className="w-full"
-        />
-      </FormControl>
-
-      <MinusIcon />
-      <FormControl>
-        <Input
-          placeholder="End date"
-          size="md"
-          type="date"
-          bg={"white"}
-          value={formatDateForFilter(defaultDates.end)}
-          onChange={(e) => onCustomRangeChange(e.target.value, 1)}
-          max={formatDateForFilter(now)}
-          className="w-full"
-        />
-      </FormControl>
-    </div>
+  return ( 
+      
+        <ChakraRadio
+        isDisabled={loading}
+        selected={selectedPeriod.value}
+          onSelect={onChange}
+          options={filterPeriods.map((fP) => {
+            return {
+              // label: selectedPeriod == 'custom' && fP.value != 'custom' ? fP.label.charAt(0) : fP.label,
+              value: fP.value,
+              label: fP.value != "custom" ? fP.label : customDatePicker,
+            };
+          })}
+        />  
   );
 }

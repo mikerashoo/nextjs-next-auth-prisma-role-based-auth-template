@@ -1,5 +1,5 @@
 import { ActiveStatus, UserRole } from "./prisma-enums";
-import { IDBCashier, IDBProvider, IDBProviderAdmin, IDBUser } from "./prisma-models";
+import {  IDBBranch, IDBProvider,  IDBUser } from "./prisma-models";
 import { IBranch } from "./providerAndBranch";
 
 export interface ICashier  {
@@ -7,18 +7,23 @@ export interface ICashier  {
 }
  
 
-export interface IUser {
-  id       : string,
-  fullName : string,
-
-  email?    : string,
-  userName?   : string,
-  phoneNumber    : string,  
-
-  role:        UserRole,
-  status:       ActiveStatus,
-  createdAt:     Date,
-  updatedAt:     Date, 
+export interface IUser extends Omit<IDBUser, 'password'> { 
+  id: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  userName?: string;
+  phoneNumber: string;
+  role: UserRole;
+  status: ActiveStatus;
+  createdAt: Date;
+  deletedAt?: Date;
+  deleted: boolean;
+  updatedAt: Date; 
+  provider?: IDBProvider; 
+  agentProvider?: IDBProvider; 
+  //: cashier; 
+  cashierBranch?: IDBBranch; 
 }
 
 
@@ -30,23 +35,27 @@ export interface IAccount {
   profile: IUser
 }
 
-export interface ICashierLoginData extends IDBCashier { 
-  branch: IBranch; 
-  accessToken:  string;
-  refreshToken:  string;
-  accessTokenExpires: number;
+export interface ICashierLoginData extends IUser { 
+  branch: IBranch;  
 }
 
-export interface IProviderAdminLoginData extends IDBProviderAdmin { 
-  provider: IDBProvider; 
-  accessToken:  string;
-  refreshToken:  string;
-  accessTokenExpires: number;
+export interface IProviderAdminLoginData extends IUser { 
+  provider: IDBProvider;  
 }
 
 
 
-export interface ILoginUser extends IAccount { 
+export interface ILoginUser extends IUser { 
+  accessToken:  string,
+  refreshToken:  string,
+  accessTokenExpires: number
+}
+
+export interface IProviderSiteLoginData extends ILoginUser  { 
+  provider: IDBProvider;    
+}
+
+export interface ITokenData {
   accessToken:  string,
   refreshToken:  string,
   accessTokenExpires: number
@@ -62,6 +71,4 @@ export interface IRefreshToken {
   }
 
 
-export type UserWithoutPassword = Omit<IDBUser, 'password'>;
-export type ProviderAdminWithoutPassword = Omit<IDBProviderAdmin, 'password'>;
-export type CashierWithoutPassword = Omit<IDBCashier, 'password'>;
+export type UserWithoutPassword = Omit<IDBUser, 'password'>; 

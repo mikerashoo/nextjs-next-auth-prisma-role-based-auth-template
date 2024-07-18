@@ -1,6 +1,7 @@
-import { useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, Switch } from "@chakra-ui/react";
+import { useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, Switch, FormLabel, FormControl } from "@chakra-ui/react";
 import React, { ReactNode, useState } from "react";
 import { HeadlessButton } from "../AppButton";
+import StatusIcon from "../StatusIcon";
 
 export interface IConfirmationDialogProps {
     openButtonLabel: string | ReactNode;
@@ -26,7 +27,7 @@ export interface IConfirmationDialogProps {
       setIsLoading(true);
       const result = await onConfirm();
       console.log("Result", result);
-      if (result) {
+      if (result == true) {
         onClose();
       }
       setIsLoading(false);
@@ -83,12 +84,15 @@ export interface IConfirmationDialogProps {
     toEnable?: boolean;
     cancelButtonLabel?: string;
     onConfirm: () => Promise<boolean>;
+    switchLabel?: string;
+    
   }
   export function ConfirmationDialogWithSwitch({
     message,
     onConfirm, 
     title,
     isChecked,
+    switchLabel,
     confirmButtonLabel,
     cancelButtonLabel,
   }: IConfirmationDialogWithSwitchProps) {
@@ -117,7 +121,13 @@ export interface IConfirmationDialogProps {
     }
     return (
       <span>
-        <Switch  colorScheme={'green'} className="ml-2" onChange={onOpen} isChecked={isChecked}/>
+        <FormControl display='flex' alignItems='center'>
+  <FormLabel htmlFor='email-alerts' mb='0'>
+    <StatusIcon isActive={isChecked} />
+  </FormLabel>
+  <Switch   colorScheme={'green'} className="ml-2" onChange={onOpen} isChecked={isChecked}/>
+  
+</FormControl> 
          
         <AlertDialog
           motionPreset="slideInBottom"

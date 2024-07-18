@@ -1,5 +1,5 @@
 // pages/api/auth/[...nextauth].ts
-import NextAuth from "next-auth";
+import NextAuth, {SessionStrategy} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"; 
 import { getUserFromBackend, getUserRefreshToken } from "@/backend-services/auth";
  
@@ -23,8 +23,7 @@ async function refreshAccessToken(token) {
   }
 }
 
-
-export default NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -56,7 +55,7 @@ export default NextAuth({
   session: {
     // Use JSON Web Tokens for session instead of database sessions.
     // This is default behavior but you can use database sessions if you prefer.
-    strategy: "jwt",
+    // strategy: ,
   },
   callbacks: {
     
@@ -67,6 +66,7 @@ export default NextAuth({
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         token.accessTokenExpires = user.accessTokenExpires
+        token.role = user.role
       }
 
        // Return previous token if the access token has not expired yet
@@ -78,6 +78,7 @@ export default NextAuth({
       return refreshAccessToken(token) 
     },
     async session({ session, token }) {
+      
       // Assign the role from the JWT to the session
       if(token){
         session.user = token.user;
@@ -85,10 +86,19 @@ export default NextAuth({
         session.refreshToken = token.refreshToken;
         session.accessTokenExpires = token.accessTokenExpires;
         session.error = token.error
+        session.role = token.role
+
       }
      
       return session;
     },
   }
   
-});
+};
+
+export default NextAuth(authOptions);
+
+
+// export default NextAuth({
+  
+// });

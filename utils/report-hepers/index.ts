@@ -14,9 +14,16 @@ export interface IDatePeriod {
     end: Date;
   }
 
+  export const CustomPeriod: IDatePeriod =  {
+    label: "Custom",
+    value: "custom",
+    showRange: true, 
+  
+  }
+
   export const filterPeriods: IDatePeriod[] = [
     {
-      label: "Daily",
+      label: "Today's",
       value: "today",
       startDate: now,
       endDate: now,
@@ -36,12 +43,9 @@ export interface IDatePeriod {
       startDate: startOfMonth(now),
       endDate: endOfMonth(now),
     },
-    {
-      label: "Custom",
-      value: "custom",
-      showRange: true, 
-    
-    }
+
+    CustomPeriod
+   
   ];
 
   export const PeriodToday: IDatePeriod = {

@@ -5,33 +5,25 @@ import React, {
   useState,
   ReactNode,
   useCallback,
-} from "react"; 
-import { branchInformationApiService } from "@/backend-services/branches/information";
-import { GENERAL_ERROR_MESSAGE } from "@/utils/constants"; 
-import BranchReportSummary from "@/components/branches/detail/BranchReportSummary";
-import { ChartBarIcon, UserGroupIcon } from "@heroicons/react/20/solid";
-import { ITabContent } from "@/components/ui-components/AppTab";
+} from "react";
+import { branchInformationApiService } from "@/backend-services/provider-api-calls/branches/information";
+import { GENERAL_ERROR_MESSAGE } from "@/utils/constants";
 import { IBranchWithDetail } from "@/utils/shared/shared-types/providerAndBranch";
-import { BranchReportProvider } from "./BranchReportContext"; 
-import PageLoading from "@/components/ui-components/PageLoading";
-import BranchCashierList from "@/components/branches/detail/cashiers/BranchCashierList";
 
 export interface IBranchDetailContext {
   loading: boolean;
   setLoading: (boolean) => void;
   selectedTab: number; 
-  tabContents: ITabContent[];
   setSelectedTab: React.Dispatch<React.SetStateAction<number>>;
   error: string | null;
   reload: () => void;
+  onUpdate: (data:  IBranchWithDetail) => void;
   branch: IBranchWithDetail;
 }
 
 const BranchDetailContext = createContext<IBranchDetailContext | undefined>(
   undefined
 );
-
-
 
 export const BranchDetailProvider = ({
   children,
@@ -43,8 +35,7 @@ export const BranchDetailProvider = ({
   const [loading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [branch, setBranch] = useState<IBranchWithDetail>();
-  const [selectedTab, setSelectedTab] = useState(0); 
- 
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const fetchBranchDetail = useCallback(async () => {
     try {
@@ -79,38 +70,22 @@ export const BranchDetailProvider = ({
   const reload = () => {
     fetchBranchDetail();
   };
-
-
-
-const tabContents = [
-  {
-    content: !branch ? <PageLoading /> :  <BranchReportProvider branchId={branch.id}> <BranchReportSummary /> </BranchReportProvider>,
-    head: {
-      label: "Ticket Report",
-      icon:  <ChartBarIcon width={24} />
-    },
-    key: 'report'
-  },
-  {
-    content: !branch ? <PageLoading /> : <BranchCashierList />,
-    head: {
-      label: "Cashier",
-      icon:  <UserGroupIcon width={24} />
-    },
-    
-    key: 'cashiers'
-  },
-  
-]
+ 
+  const onUpdate = (profile: IBranchWithDetail) => {
+    setBranch({
+      ...branch,
+      ...profile
+    })
+  }
 
   const providerData: IBranchDetailContext = {
     loading,
     error,
     reload,
-    branch,
-    tabContents,
+    branch, 
     selectedTab,
     setSelectedTab,
+    onUpdate,
     setLoading: setIsLoading,
   };
 

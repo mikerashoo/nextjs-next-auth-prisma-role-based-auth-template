@@ -1,5 +1,5 @@
  
-import { TicketStatus } from "@/utils/prisma-enums";
+import { TicketStatus } from "@/utils/shared/shared-types/prisma-enums";
 import { Text, Tag, TagLabel, Heading } from "@chakra-ui/react";
 import React from "react";
 

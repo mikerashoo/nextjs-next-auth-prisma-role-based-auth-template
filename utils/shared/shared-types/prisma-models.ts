@@ -1,6 +1,6 @@
 // Auto-generated Prisma models
 
-import { UserRole,ActiveStatus,ProviderUserRole,GameType,GameStatus,TicketStatus } from './prisma-enums';
+import { UserRole,ActiveStatus,GameType,GameStatus,TicketStatus } from './prisma-enums';
 
 export interface IDBUser {
   id: string;
@@ -15,6 +15,12 @@ export interface IDBUser {
   deletedAt?: Date;
   deleted: boolean;
   updatedAt: Date;
+  providerId?: string;
+  //: Agent;
+  superAgentId?: string;
+  agentProviderId?: string;
+  //: cashier;
+  cashierBranchId?: string;
 }
 
 export interface IDBUserWithRelations {
@@ -31,81 +37,28 @@ export interface IDBUserWithRelations {
   deleted: boolean;
   updatedAt: Date;
   refreshTokens: IDBRefreshToken[];
-}
-
-export interface IDBCashier {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName?: string;
-  phoneNumber: string;
-  status: ActiveStatus;
-  createdAt: Date;
-  deletedAt?: Date;
-  deleted: boolean;
-  updatedAt: Date;
-  branchId: string;
-}
-
-export interface IDBCashierWithRelations {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName?: string;
-  phoneNumber: string;
-  status: ActiveStatus;
-  createdAt: Date;
-  deletedAt?: Date;
-  deleted: boolean;
-  updatedAt: Date;
-  branchId: string;
-  branch: IDBBranch;
+  //: IDBProvider;
+  providerId?: string;
+  provider?: IDBProvider;
+  //: Agent;
+  superAgentId?: string;
+  superAgent?: IDBUser;
+  agents: IDBUser[];
+  agentProviderId?: string;
+  agentProvider?: IDBProvider;
+  agentBranches: IDBBranch[];
+  //: cashier;
+  cashierBranchId?: string;
+  cashierBranch?: IDBBranch;
   tickets: IDBTicket[];
   cancelledTickets: IDBTicket[];
   ticketPayments: IDBTicketPayment[];
-  refreshTokens: IDBRefreshToken[];
-}
-
-export interface IDBProviderAdmin {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName?: string;
-  email: string;
-  phoneNumber: string;
-  role: ProviderUserRole;
-  status: ActiveStatus;
-  createdAt: Date;
-  deletedAt?: Date;
-  deleted: boolean;
-  updatedAt: Date;
-  providerId: string;
-}
-
-export interface IDBProviderAdminWithRelations {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName?: string;
-  email: string;
-  phoneNumber: string;
-  role: ProviderUserRole;
-  status: ActiveStatus;
-  createdAt: Date;
-  deletedAt?: Date;
-  deleted: boolean;
-  updatedAt: Date;
-  providerId: string;
-  provider: IDBProvider;
-  refreshTokens: IDBRefreshToken[];
 }
 
 export interface IDBRefreshToken {
   id: string;
   hashedToken: string;
   userId?: string;
-  cashierId?: string;
-  providerAdminId?: string;
   revoked: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -116,10 +69,6 @@ export interface IDBRefreshTokenWithRelations {
   hashedToken: string;
   userId?: string;
   User?: IDBUser;
-  cashierId?: string;
-  Cashier?: IDBCashier;
-  providerAdminId?: string;
-  providerAdmin?: IDBProviderAdmin;
   revoked: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -135,6 +84,7 @@ export interface IDBProvider {
   updatedAt: Date;
   deletedAt?: Date;
   deleted: boolean;
+  //: Relations;
 }
 
 export interface IDBProviderWithRelations {
@@ -147,8 +97,10 @@ export interface IDBProviderWithRelations {
   updatedAt: Date;
   deletedAt?: Date;
   deleted: boolean;
-  admins: IDBProviderAdmin[];
   branches: IDBBranch[];
+  //: Relations;
+  admins: IDBUser[];
+  agents: IDBUser[];
 }
 
 export interface IDBBranch {
@@ -156,12 +108,13 @@ export interface IDBBranch {
   identifier: string;
   name: string;
   address: string;
-  providerId: string;
   status: ActiveStatus;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
   deleted: boolean;
+  providerId: string;
+  agentId?: string;
 }
 
 export interface IDBBranchWithRelations {
@@ -169,14 +122,16 @@ export interface IDBBranchWithRelations {
   identifier: string;
   name: string;
   address: string;
-  providerId: string;
   status: ActiveStatus;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
   deleted: boolean;
+  providerId: string;
   provider: IDBProvider;
-  cashiers: IDBCashier[];
+  agentId?: string;
+  agent?: IDBUser;
+  cashiers: IDBUser[];
   games: IDBGame[];
 }
 
@@ -233,10 +188,10 @@ export interface IDBTicketWithRelations {
   gameId: string;
   game: IDBGame;
   cashierId: string;
-  cashier: IDBCashier;
+  cashier: IDBUser;
   cancelledAt?: Date;
   cancelledCashierId?: string;
-  cancelledBy?: IDBCashier;
+  cancelledBy?: IDBUser;
   kenoTicket?: IDBKenoTicket;
   dogRacingTicket?: IDBDogRacingTicket;
   payment?: IDBTicketPayment;
@@ -333,6 +288,6 @@ export interface IDBTicketPaymentWithRelations {
   paidAmount?: number;
   createdAt: Date;
   ticket: IDBTicket;
-  cashier: IDBCashier;
+  cashier: IDBUser;
 }
 

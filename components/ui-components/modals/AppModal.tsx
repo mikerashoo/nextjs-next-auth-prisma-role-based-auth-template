@@ -12,32 +12,22 @@ interface IAppModalProps {
   toggleButton: ReactNode;
   title: ReactNode | string;
   loading: boolean;
-  hideModal: boolean;
+  isOpen: boolean;
+  setIsOpen : (isOpen: boolean) => void;
   children: ReactNode;
 }
 export default function AppModal({
   children,
   title,
-  toggleButton,
-  loading,
-  hideModal,
-}: IAppModalProps) {
-  let [isOpen, setIsOpen] = useState(false);
+  toggleButton, 
+  isOpen,
+  setIsOpen
+}: IAppModalProps) { 
 
-  const closeModal = () => {
-    if (loading) return;
+  const closeModal = () => { 
     setIsOpen(false);
   };
-
-  useEffect(() => {
-    console.log("Hide modal called", hideModal);
-
-    if (hideModal) {
-      console.log("Hide modal called", hideModal);
-      setIsOpen(false);
-    }
-  }, [hideModal]);
-
+ 
   function openModal() {
     setIsOpen(true);
   }

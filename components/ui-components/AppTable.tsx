@@ -6,9 +6,23 @@ import {
   UpDownIcon,
   WarningTwoIcon,
 } from "@chakra-ui/icons";
-import { Box, FormErrorIcon, Heading, Text } from "@chakra-ui/react";
-import * as React from "react"; 
+import {
+  Box,
+  Card,
+  CardBody,
+  FormErrorIcon,
+  Heading,
+  LinkBox,
+  LinkOverlay,
+  Text,
+} from "@chakra-ui/react";
+import * as React from "react";
 import GeneralErrorComponent from "./GeneralErrorComponent";
+import { usePathname, useRouter } from "next/navigation";
+import { HeadlessButton } from "./AppButton";
+import AppLink from "./AppLink";
+import Link from "next/link";
+import index from "@/pages/agents";
 
 export interface ITableProps<T> {
   loading?: boolean;
@@ -20,13 +34,22 @@ export interface ITableProps<T> {
 export interface IAppTableRowProps {
   columns: any[];
   key: string;
+  href?: string;
+  actionFromStart?: boolean;
+  mobileView?: {
+    heading: any;
+    actionUrl?: string;
+    columns: {
+      label: string;
+      value: any;
+    }[];
+  };
 }
-
 
 export interface TableCaption {
   title?: string | React.ReactNode;
-  description?: string | React.ReactNode; 
-  extra?:React.ReactNode;  
+  description?: string | React.ReactNode;
+  extra?: React.ReactNode;
 }
 
 export interface IAppTableProps {
@@ -37,21 +60,27 @@ export interface IAppTableProps {
   onReload?: () => void;
   caption?: TableCaption;
   itemsPerPage?: number;
-  columnsToHideOnMobile?: number[]
+  columnsToHideOnMobile?: number[];
 }
 
-const getHiddenOnMobileClass = (index: number, toHideIndexes: number[]): string => {
-  return (toHideIndexes ?? []).includes(index) ? 'hidden md:table-cell' : 'table-cell';
-}
+const getHiddenOnMobileClass = (
+  index: number,
+  toHideIndexes: number[]
+): string => {
+  return (toHideIndexes ?? []).includes(index)
+    ? "hidden md:table-cell"
+    : "table-cell";
+};
 function AppTable({
   columns,
   rows,
   loading,
   error,
   onReload,
+  
   caption,
   itemsPerPage = 10,
-  columnsToHideOnMobile
+  columnsToHideOnMobile,
 }: IAppTableProps) {
   let perPage = itemsPerPage > rows.length ? rows.length : itemsPerPage;
 
@@ -62,19 +91,151 @@ function AppTable({
   const lastIndex = startIndex + perPage;
 
   const currentItems = rows.slice(startIndex, lastIndex);
+  const pathname = usePathname();
 
-  console.log("Current page", currentPage)
+  console.log("Current page", currentPage);
 
   React.useEffect(() => {
     setCurrentPage(0);
   }, [rows]);
 
+  const lgTableView = (
+    <table className="min-w-full border divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          {columns.map((column, index) => {
+            return (
+              <th
+                className={`px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase ${getHiddenOnMobileClass(
+                  index,
+                  columnsToHideOnMobile
+                )}`}
+                key={"column-" + column.toString()}
+              >
+                {column}
+              </th>
+            );
+          })}
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        <TableRowUI
+          loading={loading}
+          error={error}
+          columns={columns}
+          columnsToHideOnMobile={columnsToHideOnMobile}
+          rows={currentItems}
+          onReload={onReload}
+        />
+      </tbody>
+    </table>
+  );
+
+  const mobileView = (
+    <div className="relative flex flex-col w-full ">
+      <nav className="flex w-full flex-col gap-2 font-sans text-base font-normal">
+        {
+          rows.length == 0 && (
+            <Box textAlign="center" py={16} px={6}>
+            <WarningTwoIcon boxSize={"50px"} color={"orange.300"} />
+            <Heading color={"orange.200"} as="h2" size="xl" mt={6} mb={2}>
+              No Data
+            </Heading>
+            <Text color={"gray.500"}>No data available in table</Text>
+          </Box>
+          )
+        }
+        {rows.map((rowData, rowIndex) => {
+          const { mobileView, href, columns: rowColumns, actionFromStart } = rowData; 
+
+          const path = href ? actionFromStart ? `/${href}` : pathname + "/" + href : ''; 
+
+          return (
+            <span key={rowData.key}> 
+                <LinkBox
+                  
+                
+                  className="w-full  flex hover:shadow-lg bg-slate-50 hover:bg-slate-200"
+                >
+                 
+                  <Card className="w-full">
+                  <CardBody>
+                  <LinkOverlay   href={path}>
+                    {mobileView ? (
+                      <Box>
+                        <Heading size="xs" textTransform="uppercase">
+                          {mobileView ? mobileView.heading : rowColumns[0]}
+                        </Heading>
+                        {mobileView.columns.map((rowCol, ind) => (
+                          <Text key={ind} pt="2" fontSize="sm">
+                            {rowCol.label}{" "}
+                            <span className="font-bold">{rowCol.value}</span>
+                          </Text>
+                        ))}
+                        {mobileView.actionUrl && (
+                          <AppLink href={mobileView.actionUrl}>
+                            {" "}
+                            Detail{" "}
+                          </AppLink>
+                        )}
+                      </Box>
+                    ) : (
+                      <>
+                        {rowColumns.map((rowColumn, rowColumnIndex) => {
+                          return (
+                            <Box key={rowColumnIndex}>
+                              {rowColumnIndex == 0 ? (
+                                <Heading size="xs" textTransform="uppercase">
+                                  {rowColumns[rowColumnIndex]}
+                                </Heading>
+                              ) : (
+                                <Text key={rowColumnIndex} pt="2" fontSize="sm" className="flex flex-row gap-2 w-full">
+                                  {rowColumnIndex < columns.length
+                                    ? columns[rowColumnIndex]
+                                    : ""}
+                                  <span className="font-bold">
+                                    {rowColumns[rowColumnIndex]}
+                                  </span>
+                                </Text>
+                              )}
+                            </Box>
+                          );
+                        })}
+                      </>
+                    )}
+                    </LinkOverlay>
+                  </CardBody>
+                  </Card>
+                </LinkBox>
+              
+            </span>
+          );
+        })}
+      </nav>
+    </div>
+  );
   return (
-    <div className="relative overflow-x-auto h-full w-full border rounded-lg bg-slate-50">
+    <div className="relative overflow-x-auto h-full w-full gap-2">
+      <Box
+        display={{
+          base: "none",
+          md: "flex",
+        }}
+        className="w-full"
+      >
+        {lgTableView}
+      </Box>
 
-    
-
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500  px-2 dark:text-gray-400 rounded-lg shadow-sm h-fit">
+      <Box
+        display={{
+          base: "block",
+          md: "none",
+        }}
+        className="w-full"
+      >
+        {mobileView}
+      </Box>
+      {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500  px-2 dark:text-gray-400 rounded-lg shadow-sm h-fit">
         {
           caption && (
             <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-slate-50 dark:text-white dark:bg-gray-800">
@@ -85,7 +246,7 @@ function AppTable({
           )
         }
    
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 border mx-2 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="text-xs   text-gray-700 uppercase bg-gray-50 border mx-2 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {columns.map((column, index) =>{
               return (
@@ -107,7 +268,7 @@ function AppTable({
             onReload={onReload}
           />
         </tbody>
-      </table>
+      </table> */}
 
       <TablePagination
         loading={loading}
@@ -132,6 +293,12 @@ const TableRowUI = ({
 
   columnsToHideOnMobile,
 }: IAppTableProps) => {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const pushToRoute = (href: string) => {
+    router.push(href);
+  };
   if (loading) return <TableLoading columnCount={columns.length} />;
   if (error)
     return (
@@ -142,7 +309,7 @@ const TableRowUI = ({
       </tr>
     );
 
-  if (rows.length == 0)
+  if (rows.length == 0) {
     return (
       <tr>
         <td colSpan={columns.length}>
@@ -156,27 +323,26 @@ const TableRowUI = ({
         </td>
       </tr>
     );
-
+  }
   return rows.map((rowData, index) => (
     <tr
       key={rowData.key}
-      className="bg-white border-b mx-2 dark:bg-gray-800 dark:border-gray-700"
+      className=""
+      // onClick={() =>
+      //   rowData.href ? pushToRoute(pathname + "/" + rowData.href) : null
+      // }
     >
-      {rowData.columns.map((column, colIndex) =>
-        colIndex == 0 ? (
-          <th
-            scope="row"
-            key={"th1-" + index}
-            className={`px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white ${getHiddenOnMobileClass(colIndex, columnsToHideOnMobile)}`}
-          >
-            {column}
-          </th>
-        ) : (
-          <td className={`px-6 py-3 text-center ${getHiddenOnMobileClass(colIndex, columnsToHideOnMobile)}`} key={"td-" + index + colIndex}>
-            {column}
-          </td>
-        )
-      )}
+      {rowData.columns.map((column, colIndex) => (
+        <td
+          className={`px-6 py-4 text-sm text-gray-500 whitespace-nowrap ${getHiddenOnMobileClass(
+            colIndex,
+            columnsToHideOnMobile
+          )}`}
+          key={"th-" + index + "-" + colIndex}
+        >
+          {column}
+        </td>
+      ))}
     </tr>
   ));
 };
@@ -211,6 +377,9 @@ const TablePagination = ({
   const nextCss = isNextActive
     ? "border-teal-500 border text-teal-500 hover:bg-gradient-to-r from-teal-100 to-green-100"
     : " cursor-not-allowed text-gray-300 bg-white border border-gray-200 rounded-s-lg";
+
+    if(!pageCount || pageCount <= 1) return <></>
+      
 
   return (
     <nav
